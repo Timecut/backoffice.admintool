@@ -1,0 +1,63 @@
+trigger: none
+
+parameters:
+  - name: environment
+    displayName: 'Select environment'
+    type: string
+    default: 'frontend_production'
+    values:
+      - frontend_production
+      - backend_production
+
+jobs:
+- job: frontend_production
+  displayName: 'Build Frontend for Production'
+  condition: eq('${{ parameters.environment }}', 'frontend_production')
+  pool:
+    vmImage: 'ubuntu-latest'
+  steps:
+  - task: UseNode@1
+    inputs:
+      version: '20.9.0'
+  - script: |
+      echo "Installing dependencies for Frontend"
+      cd frontend/frontend_admintool
+      yarn install
+    displayName: 'Install dependencies'
+  - script: |
+      echo "Building Frontend"
+      cd frontend/frontend_admintool
+      yarn build
+    displayName: 'Build Frontend'
+  - task: PublishBuildArtifacts@1
+    inputs:
+      PathtoPublish: 'frontend/frontend_admintool/dist'
+      ArtifactName: 'frontend_dist'
+      publishLocation: 'Container'
+    displayName: 'Publish Frontend Artifacts'
+
+- job: backend_production
+  displayName: 'Build Backend for Production'
+  condition: eq('${{ parameters.environment }}', 'backend_production')
+  pool:
+    vmImage: 'ubuntu-latest'
+  steps:
+  - task: UseNode@1
+    inputs:
+      version: '20.9.0'
+  - script: |
+      echo "Installing dependencies for Backend"
+      cd backend/backend_admintool
+      yarn install
+    displayName: 'Install dependencies'
+  - script: |
+      echo "Building Backend"
+      cd backend/backend_admintool
+      yarn build
+    displayName: 'Build Backend'
+  - task: PublishBuildArtifacts@1
+    inputs:
+      PathtoPublish: 'backend/backend_admintool/dist'
+      ArtifactName: 'backend_dist'
+      publishLocation: 'Container'
+    displayName: 'Publish Backend Artifacts'
