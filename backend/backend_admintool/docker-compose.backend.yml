@@ -6,7 +6,8 @@ services:
     container_name: backend_admintool
     working_dir: /usr/src/app
     volumes:
-      - ./dist:/usr/src/app
+      - ./dist:/usr/src/app/dist
+      - ./src:/usr/src/app/src
       - ./node_modules:/usr/src/app/node_modules
       - ./nest-cli.json:/usr/src/app/nest-cli.json
       - ./package.json:/usr/src/app/package.json
