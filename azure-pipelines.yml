@@ -53,8 +53,12 @@ jobs:
     displayName: 'Deploy Frontend'
   - script: |
       echo "Switching symlink to the new release"
-      ssh web@65.21.20.215 "mv -Tf /home/web/backoffice.admintool/releases/frontend_production_temp /home/web/backoffice.admintool/releases/frontend_production"
+      ssh web@65.21.20.215 "
+        ln -sfn /home/web/backoffice.admintool/releases/frontend_production_temp /home/web/backoffice.admintool/releases/frontend_production &&
+        rm -rf /home/web/backoffice.admintool/releases/frontend_production_temp
+      "
     displayName: 'Switch Frontend Symlink'
+
   - task: PublishBuildArtifacts@1
     inputs:
       PathtoPublish: 'frontend/frontend_admintool/dist'
