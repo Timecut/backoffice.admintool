@@ -22,7 +22,7 @@ services:
       - "traefik.http.routers.backend_admintool.tls.certresolver=mycompany"
       - "traefik.http.services.backend_admintool.loadbalancer.server.port=3000"
       
-      - "traefik.http.routers.backend_admintool.middlewares=backend_admintool_cors,backend_admintool_whitelist"
+      - "traefik.http.routers.backend_admintool.middlewares=backend_admintool_whitelist,backend_admintool_cors"
 
       - "traefik.http.middlewares.backend_admintool_whitelist.ipwhitelist.sourcerange=89.78.20.208/32,89.78.20.208/32"
 
