@@ -7,7 +7,12 @@ services:
     working_dir: /usr/src/app
     volumes:
       - ./dist:/usr/src/app
-    command: "sh -c 'yarn install && yarn start'"
+      - ./node_modules:/usr/src/app/node_modules
+      - ./nest-cli.json:/usr/src/app/nest-cli.json
+      - ./package.json:/usr/src/app/package.json
+      - ./yarn.lock:/usr/src/app/yarn.lock
+      - ./tsconfig.json:/usr/src/app/tsconfig.json
+    command: "sh -c 'yarn run start:prod'"
     environment:
       - NODE_ENV=production
     labels:
