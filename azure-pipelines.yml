@@ -29,6 +29,11 @@ jobs:
       cd frontend/frontend_admintool
       yarn build
     displayName: 'Build Frontend'
+  - script: |
+      echo "Deploying Frontend to server"
+      ssh web@65.21.20.215 "mkdir -p /home/web/backoffice.admintool/releases/frontend_production"
+      scp -r frontend/frontend_admintool/dist/* web@65.21.20.215:/home/web/backoffice.admintool/releases/frontend_production
+    displayName: 'Deploy Frontend'
   - task: PublishBuildArtifacts@1
     inputs:
       PathtoPublish: 'frontend/frontend_admintool/dist'
@@ -55,6 +60,11 @@ jobs:
       cd backend/backend_admintool
       yarn build
     displayName: 'Build Backend'
+  - script: |
+      echo "Deploying Backend to server"
+      ssh web@65.21.20.215 "mkdir -p /home/web/backoffice.admintool/releases/backend_production"
+      scp -r backend/backend_admintool/dist/* web@65.21.20.215:/home/web/backoffice.admintool/releases/backend_production
+    displayName: 'Deploy Backend'
   - task: PublishBuildArtifacts@1
     inputs:
       PathtoPublish: 'backend/backend_admintool/dist'
