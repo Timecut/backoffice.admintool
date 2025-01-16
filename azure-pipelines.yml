@@ -10,6 +10,11 @@ parameters:
       - backend_production
 
 jobs:
+# frontend_production
+# 
+# 
+# 
+# 
 - job: frontend_production
   displayName: 'Build and Deploy Frontend for Production'
   condition: eq('${{ parameters.environment }}', 'frontend_production')
@@ -94,6 +99,11 @@ jobs:
       ssh web@65.21.20.215 "docker-compose -f /home/web/backoffice.admintool/releases/frontend_$(BUILD_ID)/docker-compose.yml up -d"
     displayName: 'Start Frontend Docker Container'
 
+# backend_production
+# 
+# 
+# 
+# 
 - job: backend_production
   displayName: 'Build and Deploy Backend for Production'
   condition: eq('${{ parameters.environment }}', 'backend_production')
@@ -167,8 +177,8 @@ jobs:
       echo "Current target is: $CURRENT_TARGET"
       echo "Now executing: docker-compose -f $CURRENT_TARGET/docker-compose.yml down"
       ssh web@65.21.20.215 "docker-compose -f $CURRENT_TARGET/docker-compose.yml down"
-      echo "Now executing: docker rm -f backend_admintool"
-      ssh web@65.21.20.215 "docker rm -f backend_admintool || true"
+      echo "Now executing: docker rm -f backend_admintool -v"
+      ssh web@65.21.20.215 "docker rm -f backend_admintool -v"
     displayName: 'Stop and Remove Existing Container'
   - script: |
       echo "Switching symlink to the new release"
