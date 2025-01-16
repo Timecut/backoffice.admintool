@@ -185,9 +185,10 @@ jobs:
       echo "Now executing: docker ps -a | grep '*admintool*'"
       ssh web@65.21.20.215 "docker ps -a | grep '*admintool*'"
       
-      echo "Now executing: docker rm -f backend_admintool -v"
-      ssh web@65.21.20.215 "docker rm -f backend_admintool -v"
+      echo "Now executing: docker rm -f 'backend_admintool' -v"
+      ssh web@65.21.20.215 "docker rm -f 'backend_admintool' -v"
     displayName: 'Stop and Remove Existing Container'
+    
   - script: |
       echo "Switching symlink to the new release"
       echo "Now executing: ln -sfn /home/web/backoffice.admintool/releases/backend_$(BUILD_ID) /home/web/backoffice.admintool/releases/backend_production"
