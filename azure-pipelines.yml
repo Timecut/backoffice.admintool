@@ -83,8 +83,10 @@ jobs:
       echo "Fetching current symlink target for frontend_production"
       CURRENT_TARGET=$(ssh web@65.21.20.215 "readlink /home/web/backoffice.admintool/releases/frontend_production")
       echo "Current target is: $CURRENT_TARGET"
+      
       echo "Now executing: docker-compose -f $CURRENT_TARGET/docker-compose.yml down"
       ssh web@65.21.20.215 "docker-compose -f $CURRENT_TARGET/docker-compose.yml down"
+
       echo "Now executing: docker rm -f frontend_admintool"
       ssh web@65.21.20.215 "docker rm -f frontend_admintool || true"
     displayName: 'Stop and Remove Existing Container'
@@ -174,9 +176,15 @@ jobs:
       echo "Stopping and Removing Existing Backend Docker Container"
       echo "Fetching current symlink target for backend_production"
       CURRENT_TARGET=$(ssh web@65.21.20.215 "readlink /home/web/backoffice.admintool/releases/backend_production")
+      
       echo "Current target is: $CURRENT_TARGET"
+      
       echo "Now executing: docker-compose -f $CURRENT_TARGET/docker-compose.yml down"
       ssh web@65.21.20.215 "docker-compose -f $CURRENT_TARGET/docker-compose.yml down"
+
+      echo "Now executing: docker ps -a | grep '*admintool*'"
+      ssh web@65.21.20.215 "docker ps -a | grep '*admintool*'"
+      
       echo "Now executing: docker rm -f backend_admintool -v"
       ssh web@65.21.20.215 "docker rm -f backend_admintool -v"
     displayName: 'Stop and Remove Existing Container'
@@ -185,6 +193,7 @@ jobs:
       echo "Now executing: ln -sfn /home/web/backoffice.admintool/releases/backend_$(BUILD_ID) /home/web/backoffice.admintool/releases/backend_production"
       ssh web@65.21.20.215 "ln -sfn /home/web/backoffice.admintool/releases/backend_$(BUILD_ID) /home/web/backoffice.admintool/releases/backend_production"
     displayName: 'Switch Backend Symlink'
+
   - script: |
       echo "Starting Backend Docker Container"
       echo "Now executing: docker-compose -f /home/web/backoffice.admintool/releases/backend_$(BUILD_ID)/docker-compose.yml up -d"
