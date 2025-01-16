@@ -11,31 +11,19 @@ parameters:
 
 jobs:
 - job: frontend_production
-  displayName: 'Build Frontend for Production'
+  displayName: 'Build and Deploy Frontend for Production'
   condition: eq('${{ parameters.environment }}', 'frontend_production')
   pool:
-    vmImage: 'ubuntu-latest'  
-  variables:
-    BUILD_ID: $(date:yyyyMMddHHmmss)
+    vmImage: 'ubuntu-latest'
   steps:
   - task: UseNode@1
     inputs:
-      version: '20.9.0'
-  - task: DownloadSecureFile@1
-    name: sshKey
-    inputs:
-      secureFile: 'azure_pipelines_backoffice_admintool'
-    displayName: 'Download SSH Private Key'
+      version: '16.x'
   - script: |
-      mkdir -p ~/.ssh
-      cp $(sshKey.secureFilePath) ~/.ssh/id_rsa
-      chmod 600 ~/.ssh/id_rsa
-      echo "StrictHostKeyChecking no" >> ~/.ssh/config
-    displayName: 'Configure SSH Key'
-  - script: |
-      echo "Checking SSH connection"
-      ssh -vvv -t web@65.21.20.215 "pwd && ls -al"
-    displayName: 'Verify SSH Connection'
+      echo "Generating BUILD_ID"
+      BUILD_ID=$(date +%Y%m%d%H%M%S)
+      echo "##vso[task.setvariable variable=BUILD_ID]$BUILD_ID"
+    displayName: 'Generate BUILD_ID'
   - script: |
       echo "Installing dependencies for Frontend"
       cd frontend/frontend_admintool
@@ -47,9 +35,13 @@ jobs:
       yarn build
     displayName: 'Build Frontend'
   - script: |
+      echo "Checking SSH connection"
+      ssh -vvv -t web@65.21.20.215 "pwd && ls -al"
+    displayName: 'Verify SSH Connection'
+  - script: |
       echo "Deploying Frontend to server using rsync"
-      ssh web@65.21.20.215 "mkdir -p /home/web/backoffice.admintool/releases/frontend_$(BUILD_ID)"
-      rsync -avz frontend/frontend_admintool/dist/ web@65.21.20.215:/home/web/backoffice.admintool/releases/frontend_$(BUILD_ID)
+      ssh web@65.21.20.215 "mkdir -p /home/web/backoffice.admintool/releases/frontend_${BUILD_ID}"
+      rsync -avz frontend/frontend_admintool/dist/ web@65.21.20.215:/home/web/backoffice.admintool/releases/frontend_${BUILD_ID}
     displayName: 'Deploy Frontend'
   - script: |
       echo "Ensuring only 25 releases are kept"
@@ -57,39 +49,27 @@ jobs:
     displayName: 'Cleanup Old Frontend Releases'
   - script: |
       echo "Switching symlink to the new release"
-      ssh web@65.21.20.215 "ln -sfn /home/web/backoffice.admintool/releases/frontend_$(BUILD_ID) /home/web/backoffice.admintool/releases/frontend_production"
+      ssh web@65.21.20.215 "ln -sfn /home/web/backoffice.admintool/releases/frontend_${BUILD_ID} /home/web/backoffice.admintool/releases/frontend_production"
     displayName: 'Switch Frontend Symlink'
-  - task: PublishBuildArtifacts@1
-    inputs:
-      PathtoPublish: 'frontend/frontend_admintool/dist'
-      ArtifactName: 'frontend_dist'
-      publishLocation: 'Container'
-    displayName: 'Publish Frontend Artifacts'
+  - script: |
+      echo "Starting Frontend Docker Container"
+      ssh web@65.21.20.215 "docker-compose -f /home/web/backoffice.admintool/releases/frontend_${BUILD_ID}/docker-compose.yml up -d"
+    displayName: 'Start Frontend Docker Container'
 
 - job: backend_production
-  displayName: 'Build Backend for Production'
+  displayName: 'Build and Deploy Backend for Production'
   condition: eq('${{ parameters.environment }}', 'backend_production')
   pool:
     vmImage: 'ubuntu-latest'
   steps:
   - task: UseNode@1
     inputs:
-      version: '20.9.0'
-  - task: DownloadSecureFile@1
-    name: sshKey
-    inputs:
-      secureFile: 'azure_pipelines_backoffice_admintool'
-    displayName: 'Download SSH Private Key'
+      version: '16.x'
   - script: |
-      mkdir -p ~/.ssh
-      cp $(sshKey.secureFilePath) ~/.ssh/id_rsa
-      chmod 600 ~/.ssh/id_rsa
-      echo "StrictHostKeyChecking no" >> ~/.ssh/config
-    displayName: 'Configure SSH Key'
-  - script: |
-      echo "Checking SSH connection"
-      ssh -vvv -t web@65.21.20.215 "pwd && ls -al"
-    displayName: 'Verify SSH Connection'
+      echo "Generating BUILD_ID"
+      BUILD_ID=$(date +%Y%m%d%H%M%S)
+      echo "##vso[task.setvariable variable=BUILD_ID]$BUILD_ID"
+    displayName: 'Generate BUILD_ID'
   - script: |
       echo "Installing dependencies for Backend"
       cd backend/backend_admintool
@@ -101,9 +81,13 @@ jobs:
       yarn build
     displayName: 'Build Backend'
   - script: |
+      echo "Checking SSH connection"
+      ssh -vvv -t web@65.21.20.215 "pwd && ls -al"
+    displayName: 'Verify SSH Connection'
+  - script: |
       echo "Deploying Backend to server using rsync"
-      ssh web@65.21.20.215 "mkdir -p /home/web/backoffice.admintool/releases/backend_$(BUILD_ID)"
-      rsync -avz backend/backend_admintool/dist/ web@65.21.20.215:/home/web/backoffice.admintool/releases/backend_$(BUILD_ID)
+      ssh web@65.21.20.215 "mkdir -p /home/web/backoffice.admintool/releases/backend_${BUILD_ID}"
+      rsync -avz backend/backend_admintool/dist/ web@65.21.20.215:/home/web/backoffice.admintool/releases/backend_${BUILD_ID}
     displayName: 'Deploy Backend'
   - script: |
       echo "Ensuring only 25 releases are kept"
@@ -111,11 +95,9 @@ jobs:
     displayName: 'Cleanup Old Backend Releases'
   - script: |
       echo "Switching symlink to the new release"
-      ssh web@65.21.20.215 "ln -sfn /home/web/backoffice.admintool/releases/backend_$(BUILD_ID) /home/web/backoffice.admintool/releases/backend_production"
+      ssh web@65.21.20.215 "ln -sfn /home/web/backoffice.admintool/releases/backend_${BUILD_ID} /home/web/backoffice.admintool/releases/backend_production"
     displayName: 'Switch Backend Symlink'
-  - task: PublishBuildArtifacts@1
-    inputs:
-      PathtoPublish: 'backend/backend_admintool/dist'
-      ArtifactName: 'backend_dist'
-      publishLocation: 'Container'
-    displayName: 'Publish Backend Artifacts'
+  - script: |
+      echo "Starting Backend Docker Container"
+      ssh web@65.21.20.215 "docker-compose -f /home/web/backoffice.admintool/releases/backend_${BUILD_ID}/docker-compose.yml up -d"
+    displayName: 'Start Backend Docker Container'
