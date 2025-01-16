@@ -204,8 +204,8 @@ jobs:
 
   - script: |
       echo "Starting Backend Docker Container"
-      echo "Now executing: docker-compose -f /home/web/backoffice.admintool/releases/backend_$(BUILD_ID)/docker-compose.yml up -d"
-      ssh web@65.21.20.215 "docker-compose -f /home/web/backoffice.admintool/releases/backend_$(BUILD_ID)/docker-compose.yml up -d"
+      echo "Now executing: docker rm -f backend_admintool -v && docker-compose -f /home/web/backoffice.admintool/releases/backend_$(BUILD_ID)/docker-compose.yml up -d"
+      ssh web@65.21.20.215 "docker rm -f backend_admintool -v && docker-compose -f /home/web/backoffice.admintool/releases/backend_$(BUILD_ID)/docker-compose.yml up -d"
       if [ $? -ne 0 ]; then
         echo "Failed to start Docker Compose services"
         exit 1
