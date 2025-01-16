@@ -53,12 +53,9 @@ jobs:
     displayName: 'Deploy Frontend'
   - script: |
       echo "Switching symlink to the new release"
-      ssh web@65.21.20.215 "
-        ln -sfn /home/web/backoffice.admintool/releases/frontend_production_temp /home/web/backoffice.admintool/releases/frontend_production &&
-        rm -rf /home/web/backoffice.admintool/releases/frontend_production_temp
-      "
+      BUILD_ID=$(date +%Y%m%d%H%M%S)
+      ssh web@65.21.20.215 "ln -sfn /home/web/backoffice.admintool/releases/frontend_$BUILD_ID /home/web/backoffice.admintool/releases/frontend_production"
     displayName: 'Switch Frontend Symlink'
-
   - task: PublishBuildArtifacts@1
     inputs:
       PathtoPublish: 'frontend/frontend_admintool/dist'
@@ -105,11 +102,11 @@ jobs:
       BUILD_ID=$(date +%Y%m%d%H%M%S)
       ssh web@65.21.20.215 "mkdir -p /home/web/backoffice.admintool/releases/backend_$BUILD_ID"
       rsync -avz backend/backend_admintool/dist/ web@65.21.20.215:/home/web/backoffice.admintool/releases/backend_$BUILD_ID
-      ssh web@65.21.20.215 "ln -sfn /home/web/backoffice.admintool/releases/backend_$BUILD_ID /home/web/backoffice.admintool/releases/backend_production_temp"
     displayName: 'Deploy Backend'
   - script: |
       echo "Switching symlink to the new release"
-      ssh web@65.21.20.215 "mv -Tf /home/web/backoffice.admintool/releases/backend_production_temp /home/web/backoffice.admintool/releases/backend_production"
+      BUILD_ID=$(date +%Y%m%d%H%M%S)
+      ssh web@65.21.20.215 "ln -sfn /home/web/backoffice.admintool/releases/backend_$BUILD_ID /home/web/backoffice.admintool/releases/backend_production"
     displayName: 'Switch Backend Symlink'
   - task: PublishBuildArtifacts@1
     inputs:
