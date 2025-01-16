@@ -12,7 +12,7 @@ const TestComponent: React.FC = () => {
     const handleClick = async () => {
         try {
             const result = await axios.get<ResponseType>(
-                'https://frontend-admintool.backoffice.mhub.se/api/test',
+                'https://backend-admintool.backoffice.mhub.se/api/test',
                 { withCredentials: true }
             );
             setResponse(result.data.message);

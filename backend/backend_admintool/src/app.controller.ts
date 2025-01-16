@@ -10,8 +10,8 @@ export class AppController {
     return this.appService.getHello();
   }
 
-  @Get("/api/hello")
-  getApiHello() {
+  @Get("/api/test")
+  getApiTest() {
     return { success: true, message: `Random number: ${Math.random()}` }
   }
 }
