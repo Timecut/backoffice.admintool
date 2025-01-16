@@ -47,6 +47,7 @@ jobs:
       cd frontend/frontend_admintool
       yarn build
     displayName: 'Build Frontend'
+# 
 
   - script: |
       echo "Checking SSH connection"
@@ -74,6 +75,8 @@ jobs:
       echo "Current target is: $CURRENT_TARGET"
       echo "Now executing: docker-compose -f $CURRENT_TARGET/docker-compose.yml down"
       ssh web@65.21.20.215 "docker-compose -f $CURRENT_TARGET/docker-compose.yml down"
+      echo "Now executing: docker rm -f frontend_admintool"
+      ssh web@65.21.20.215 "docker rm -f frontend_admintool || true"
     displayName: 'Stop and Remove Existing Container'
   - script: |
       echo "Switching symlink to the new release"
