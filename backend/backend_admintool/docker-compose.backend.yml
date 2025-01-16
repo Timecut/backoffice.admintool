@@ -11,7 +11,7 @@ services:
     environment:
       - NODE_ENV=production
     labels:
-      - "traefik.http.routers.backend_admintool.rule=Host(`backend_admintool.backoffice.mhub.se`)"
+      - "traefik.http.routers.backend_admintool.rule=Host(`backend-admintool.backoffice.mhub.se`)"
       - "traefik.http.routers.backend_admintool.entrypoints=websecure"
       - "traefik.http.routers.backend_admintool.tls.certresolver=mycompany"
       - "traefik.http.services.backend_admintool.loadbalancer.server.port=3000"
