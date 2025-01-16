@@ -172,6 +172,7 @@ jobs:
       echo "Now executing: ls -dt /home/web/backoffice.admintool/releases/backend_* | tail -n +26 | xargs rm -rf"
       ssh web@65.21.20.215 "ls -dt /home/web/backoffice.admintool/releases/backend_* | tail -n +26 | xargs rm -rf"
     displayName: 'Cleanup Old Backend Releases'
+
   - script: |
       echo "Stopping and Removing Existing Backend Docker Container"
       echo "Fetching current symlink target for backend_production"
@@ -182,13 +183,31 @@ jobs:
       echo "Now executing: docker-compose -f $CURRENT_TARGET/docker-compose.yml down"
       ssh web@65.21.20.215 "docker-compose -f $CURRENT_TARGET/docker-compose.yml down"
 
-      echo "Now executing: docker ps -a | grep '*admintool*'"
-      ssh web@65.21.20.215 "docker ps -a | grep '*admintool*'"
-      
-      echo "Now executing: docker rm -f 'backend_admintool' -v"
-      ssh web@65.21.20.215 "docker rm -f 'backend_admintool' -v"
+      echo "Now executing: docker ps -a | grep 'backend_admintool'"
+      CONTAINERS=$(ssh web@65.21.20.215 "docker ps -a | grep 'backend_admintool'")
+      if [ $? -ne 0 ]; then
+        echo "Failed to list Docker containers"
+        exit 1
+      fi
+
+      echo "Found conflicting containers:"
+      echo "$CONTAINERS"
+
+      echo "Now executing: docker rm -f 'backend_admintool'"
+      ssh web@65.21.20.215 "docker rm -f 'backend_admintool'"
+      if [ $? -ne 0 ]; then
+        echo "Failed to remove Docker container"
+        exit 1
+      fi
+
+      echo "Now executing: docker volume rm -f backend_admintool_backend_admintool_data"
+      ssh web@65.21.20.215 "docker volume rm -f backend_admintool_backend_admintool_data"
+      if [ $? -ne 0 ]; then
+        echo "Failed to remove Docker volume"
+        exit 1
+      fi
     displayName: 'Stop and Remove Existing Container'
-    
+
   - script: |
       echo "Switching symlink to the new release"
       echo "Now executing: ln -sfn /home/web/backoffice.admintool/releases/backend_$(BUILD_ID) /home/web/backoffice.admintool/releases/backend_production"
@@ -199,4 +218,8 @@ jobs:
       echo "Starting Backend Docker Container"
       echo "Now executing: docker-compose -f /home/web/backoffice.admintool/releases/backend_$(BUILD_ID)/docker-compose.yml up -d"
       ssh web@65.21.20.215 "docker-compose -f /home/web/backoffice.admintool/releases/backend_$(BUILD_ID)/docker-compose.yml up -d"
+      if [ $? -ne 0 ]; then
+        echo "Failed to start Docker Compose services"
+        exit 1
+      fi
     displayName: 'Start Backend Docker Container'
