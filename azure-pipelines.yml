@@ -58,10 +58,12 @@ jobs:
       echo "Deploying Frontend to server using rsync"
       echo "Now executing: mkdir -p /home/web/backoffice.admintool/releases/frontend_$(BUILD_ID)"
       ssh web@65.21.20.215 "mkdir -p /home/web/backoffice.admintool/releases/frontend_$(BUILD_ID)"
-      echo "Now executing: rsync -avz frontend/frontend_admintool/dist/ web@65.21.20.215:/home/web/backoffice.admintool/releases/frontend_$(BUILD_ID)"
-      rsync -avz frontend/frontend_admintool/dist/ web@65.21.20.215:/home/web/backoffice.admintool/releases/frontend_$(BUILD_ID)
+      echo "Now executing: rsync -avz frontend/frontend_admintool/dist/ web@65.21.20.215:/home/web/backoffice.admintool/releases/frontend_$(BUILD_ID)/dist/"
+      rsync -avz frontend/frontend_admintool/dist/ web@65.21.20.215:/home/web/backoffice.admintool/releases/frontend_$(BUILD_ID)/dist/
       echo "Now executing: rsync -avz frontend/frontend_admintool/docker-compose.frontend.yml web@65.21.20.215:/home/web/backoffice.admintool/releases/frontend_$(BUILD_ID)/docker-compose.yml"
       rsync -avz frontend/frontend_admintool/docker-compose.frontend.yml web@65.21.20.215:/home/web/backoffice.admintool/releases/frontend_$(BUILD_ID)/docker-compose.yml
+      echo "Now executing: rsync -avz frontend/frontend_admintool/nginx_config/ web@65.21.20.215:/home/web/backoffice.admintool/releases/frontend_$(BUILD_ID)/nginx_config/"
+      rsync -avz frontend/frontend_admintool/nginx_config/ web@65.21.20.215:/home/web/backoffice.admintool/releases/frontend_$(BUILD_ID)/nginx_config/
     displayName: 'Deploy Frontend'
   - script: |
       echo "Ensuring only 25 releases are kept"
