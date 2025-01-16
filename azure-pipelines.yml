@@ -23,7 +23,7 @@ jobs:
   - task: DownloadSecureFile@1
     name: sshKey
     inputs:
-      secureFile: 'azure_pipelines_backoffice_admintool' # Nazwa pliku w Secure Files
+      secureFile: 'azure_pipelines_backoffice_admintool'
     displayName: 'Download SSH Private Key'
 
   - script: |
@@ -34,42 +34,44 @@ jobs:
     displayName: 'Configure SSH Key'
 
   - script: |
-      echo "Generating BUILD_ID"
-      BUILD_ID=$(date +%Y%m%d%H%M%S)
-      echo "##vso[task.setvariable variable=BUILD_ID]$BUILD_ID"
-    displayName: 'Generate BUILD_ID'
-  - script: |
       echo "Installing dependencies for Frontend"
+      echo "Now executing: cd frontend/frontend_admintool && yarn install"
       cd frontend/frontend_admintool
       yarn install
-      echo "jaki build ${BUILD_ID}"
     displayName: 'Install dependencies'
   - script: |
       echo "Building Frontend"
+      echo "Now executing: cd frontend/frontend_admintool && yarn build"
       cd frontend/frontend_admintool
       yarn build
     displayName: 'Build Frontend'
   - script: |
       echo "Checking SSH connection"
+      echo "Now executing: ssh -vvv -t web@65.21.20.215 \"pwd && ls -al\""
       ssh -vvv -t web@65.21.20.215 "pwd && ls -al"
     displayName: 'Verify SSH Connection'
   - script: |
       echo "Deploying Frontend to server using rsync"
-      echo "Deploying to folder: /home/web/backoffice.admintool/releases/frontend_${BUILD_ID}"
+      echo "Now executing: mkdir -p /home/web/backoffice.admintool/releases/frontend_${BUILD_ID}"
       ssh web@65.21.20.215 "mkdir -p /home/web/backoffice.admintool/releases/frontend_${BUILD_ID}"
+      echo "Now executing: rsync -avz frontend/frontend_admintool/dist/ web@65.21.20.215:/home/web/backoffice.admintool/releases/frontend_${BUILD_ID}"
       rsync -avz frontend/frontend_admintool/dist/ web@65.21.20.215:/home/web/backoffice.admintool/releases/frontend_${BUILD_ID}
-      rsync -avz frontend/docker-compose.yml web@65.21.20.215:/home/web/backoffice.admintool/releases/frontend_${BUILD_ID}/
+      echo "Now executing: rsync -avz frontend/frontend_admintool/docker-compose.frontend.yml web@65.21.20.215:/home/web/backoffice.admintool/releases/frontend_${BUILD_ID}/docker-compose.yml"
+      rsync -avz frontend/frontend_admintool/docker-compose.frontend.yml web@65.21.20.215:/home/web/backoffice.admintool/releases/frontend_${BUILD_ID}/docker-compose.yml
     displayName: 'Deploy Frontend'
   - script: |
       echo "Ensuring only 25 releases are kept"
+      echo "Now executing: ls -dt /home/web/backoffice.admintool/releases/frontend_* | tail -n +26 | xargs rm -rf"
       ssh web@65.21.20.215 "ls -dt /home/web/backoffice.admintool/releases/frontend_* | tail -n +26 | xargs rm -rf"
     displayName: 'Cleanup Old Frontend Releases'
   - script: |
       echo "Switching symlink to the new release"
+      echo "Now executing: ln -sfn /home/web/backoffice.admintool/releases/frontend_${BUILD_ID} /home/web/backoffice.admintool/releases/frontend_production"
       ssh web@65.21.20.215 "ln -sfn /home/web/backoffice.admintool/releases/frontend_${BUILD_ID} /home/web/backoffice.admintool/releases/frontend_production"
     displayName: 'Switch Frontend Symlink'
   - script: |
       echo "Starting Frontend Docker Container"
+      echo "Now executing: docker-compose -f /home/web/backoffice.admintool/releases/frontend_${BUILD_ID}/docker-compose.yml up -d"
       ssh web@65.21.20.215 "docker-compose -f /home/web/backoffice.admintool/releases/frontend_${BUILD_ID}/docker-compose.yml up -d"
     displayName: 'Start Frontend Docker Container'
 
