@@ -55,12 +55,12 @@ jobs:
     displayName: 'Verify SSH Connection'
   - script: |
       echo "Deploying Frontend to server using rsync"
-      echo "Now executing: mkdir -p /home/web/backoffice.admintool/releases/frontend_${{ variables.BUILD_ID }}"
-      ssh web@65.21.20.215 "mkdir -p /home/web/backoffice.admintool/releases/frontend_${{ variables.BUILD_ID }}"
-      echo "Now executing: rsync -avz frontend/frontend_admintool/dist/ web@65.21.20.215:/home/web/backoffice.admintool/releases/frontend_${{ variables.BUILD_ID }}"
-      rsync -avz frontend/frontend_admintool/dist/ web@65.21.20.215:/home/web/backoffice.admintool/releases/frontend_${{ variables.BUILD_ID }}
-      echo "Now executing: rsync -avz frontend/frontend_admintool/docker-compose.frontend.yml web@65.21.20.215:/home/web/backoffice.admintool/releases/frontend_${{ variables.BUILD_ID }}/docker-compose.yml"
-      rsync -avz frontend/frontend_admintool/docker-compose.frontend.yml web@65.21.20.215:/home/web/backoffice.admintool/releases/frontend_${{ variables.BUILD_ID }}/docker-compose.yml
+      echo "Now executing: mkdir -p /home/web/backoffice.admintool/releases/frontend_$(BUILD_ID)"
+      ssh web@65.21.20.215 "mkdir -p /home/web/backoffice.admintool/releases/frontend_$(BUILD_ID)"
+      echo "Now executing: rsync -avz frontend/frontend_admintool/dist/ web@65.21.20.215:/home/web/backoffice.admintool/releases/frontend_$(BUILD_ID)"
+      rsync -avz frontend/frontend_admintool/dist/ web@65.21.20.215:/home/web/backoffice.admintool/releases/frontend_$(BUILD_ID)
+      echo "Now executing: rsync -avz frontend/frontend_admintool/docker-compose.frontend.yml web@65.21.20.215:/home/web/backoffice.admintool/releases/frontend_$(BUILD_ID)/docker-compose.yml"
+      rsync -avz frontend/frontend_admintool/docker-compose.frontend.yml web@65.21.20.215:/home/web/backoffice.admintool/releases/frontend_$(BUILD_ID)/docker-compose.yml
     displayName: 'Deploy Frontend'
   - script: |
       echo "Ensuring only 25 releases are kept"
@@ -69,13 +69,13 @@ jobs:
     displayName: 'Cleanup Old Frontend Releases'
   - script: |
       echo "Switching symlink to the new release"
-      echo "Now executing: ln -sfn /home/web/backoffice.admintool/releases/frontend_${{ variables.BUILD_ID }} /home/web/backoffice.admintool/releases/frontend_production"
-      ssh web@65.21.20.215 "ln -sfn /home/web/backoffice.admintool/releases/frontend_${{ variables.BUILD_ID }} /home/web/backoffice.admintool/releases/frontend_production"
+      echo "Now executing: ln -sfn /home/web/backoffice.admintool/releases/frontend_$(BUILD_ID) /home/web/backoffice.admintool/releases/frontend_production"
+      ssh web@65.21.20.215 "ln -sfn /home/web/backoffice.admintool/releases/frontend_$(BUILD_ID) /home/web/backoffice.admintool/releases/frontend_production"
     displayName: 'Switch Frontend Symlink'
   - script: |
       echo "Starting Frontend Docker Container"
-      echo "Now executing: docker-compose -f /home/web/backoffice.admintool/releases/frontend_${{ variables.BUILD_ID }}/docker-compose.yml down && docker-compose -f /home/web/backoffice.admintool/releases/frontend_${{ variables.BUILD_ID }}/docker-compose.yml up -d"
-      ssh web@65.21.20.215 "docker-compose -f /home/web/backoffice.admintool/releases/frontend_${{ variables.BUILD_ID }}/docker-compose.yml down && docker-compose -f /home/web/backoffice.admintool/releases/frontend_${{ variables.BUILD_ID }}/docker-compose.yml up -d"
+      echo "Now executing: docker-compose -f /home/web/backoffice.admintool/releases/frontend_$(BUILD_ID)/docker-compose.yml down && docker-compose -f /home/web/backoffice.admintool/releases/frontend_$(BUILD_ID)/docker-compose.yml up -d"
+      ssh web@65.21.20.215 "docker-compose -f /home/web/backoffice.admintool/releases/frontend_$(BUILD_ID)/docker-compose.yml down && docker-compose -f /home/web/backoffice.admintool/releases/frontend_$(BUILD_ID)/docker-compose.yml up -d"
     displayName: 'Start Frontend Docker Container'
 
 - job: backend_production
