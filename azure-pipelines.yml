@@ -49,7 +49,6 @@ jobs:
       BUILD_ID=$(date +%Y%m%d%H%M%S)
       ssh web@65.21.20.215 "mkdir -p /home/web/backoffice.admintool/releases/frontend_$BUILD_ID"
       rsync -avz frontend/frontend_admintool/dist/ web@65.21.20.215:/home/web/backoffice.admintool/releases/frontend_$BUILD_ID
-      ssh web@65.21.20.215 "ln -sfn /home/web/backoffice.admintool/releases/frontend_$BUILD_ID /home/web/backoffice.admintool/releases/frontend_production_temp"
     displayName: 'Deploy Frontend'
   - script: |
       echo "Switching symlink to the new release"
