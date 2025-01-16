@@ -15,8 +15,16 @@ services:
       - "traefik.http.routers.backend_admintool.entrypoints=websecure"
       - "traefik.http.routers.backend_admintool.tls.certresolver=mycompany"
       - "traefik.http.services.backend_admintool.loadbalancer.server.port=3000"
-      - "traefik.http.routers.backend_admintool.middlewares=backend_admintool_whitelist"
+      
+      - "traefik.http.routers.backend_admintool.middlewares=backend_admintool_cors,backend_admintool_whitelist"
+
       - "traefik.http.middlewares.backend_admintool_whitelist.ipwhitelist.sourcerange=89.78.20.208/32,89.78.20.208/32"
+
+      - "traefik.http.middlewares.backend_admintool_cors.headers.accesscontrolallowmethods=GET,POST,PUT,DELETE,OPTIONS"
+      - "traefik.http.middlewares.backend_admintool_cors.headers.accesscontrolalloworiginlist=https://frontend-admintool.backoffice.mhub.se"
+      - "traefik.http.middlewares.backend_admintool_cors.headers.accesscontrolallowcredentials=true"
+      - "traefik.http.middlewares.backend_admintool_cors.headers.accesscontrolallowheaders=*"
+      - "traefik.http.routers.backend_admintool.middlewares=backend_admintool_cors"
     expose:
       - "3000"
     networks:
