@@ -42,6 +42,7 @@ jobs:
       echo "Installing dependencies for Frontend"
       cd frontend/frontend_admintool
       yarn install
+      echo "jaki build ${BUILD_ID}"
     displayName: 'Install dependencies'
   - script: |
       echo "Building Frontend"
@@ -54,8 +55,10 @@ jobs:
     displayName: 'Verify SSH Connection'
   - script: |
       echo "Deploying Frontend to server using rsync"
+      echo "Deploying to folder: /home/web/backoffice.admintool/releases/frontend_${BUILD_ID}"
       ssh web@65.21.20.215 "mkdir -p /home/web/backoffice.admintool/releases/frontend_${BUILD_ID}"
       rsync -avz frontend/frontend_admintool/dist/ web@65.21.20.215:/home/web/backoffice.admintool/releases/frontend_${BUILD_ID}
+      rsync -avz frontend/docker-compose.yml web@65.21.20.215:/home/web/backoffice.admintool/releases/frontend_${BUILD_ID}/
     displayName: 'Deploy Frontend'
   - script: |
       echo "Ensuring only 25 releases are kept"
