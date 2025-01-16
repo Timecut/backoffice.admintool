@@ -183,28 +183,16 @@ jobs:
       echo "Now executing: docker-compose -f $CURRENT_TARGET/docker-compose.yml down"
       ssh web@65.21.20.215 "docker-compose -f $CURRENT_TARGET/docker-compose.yml down"
 
-      echo "Now executing: docker ps -a | grep 'backend_admintool'"
-      CONTAINERS=$(ssh web@65.21.20.215 "docker ps -a | grep 'backend_admintool'")
-      if [ $? -ne 0 ]; then
-        echo "Failed to list Docker containers"
-        exit 1
-      fi
-
-      echo "Found conflicting containers:"
-      echo "$CONTAINERS"
-
       echo "Now executing: docker rm -f 'backend_admintool'"
       ssh web@65.21.20.215 "docker rm -f 'backend_admintool'"
       if [ $? -ne 0 ]; then
         echo "Failed to remove Docker container"
-        exit 1
       fi
 
       echo "Now executing: docker volume rm -f backend_admintool_backend_admintool_data"
       ssh web@65.21.20.215 "docker volume rm -f backend_admintool_backend_admintool_data"
       if [ $? -ne 0 ]; then
         echo "Failed to remove Docker volume"
-        exit 1
       fi
     displayName: 'Stop and Remove Existing Container'
 
