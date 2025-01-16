@@ -14,7 +14,9 @@ jobs:
   displayName: 'Build Frontend for Production'
   condition: eq('${{ parameters.environment }}', 'frontend_production')
   pool:
-    vmImage: 'ubuntu-latest'
+    vmImage: 'ubuntu-latest'  
+  variables:
+    BUILD_ID: $(date:yyyyMMddHHmmss)
   steps:
   - task: UseNode@1
     inputs:
@@ -46,14 +48,16 @@ jobs:
     displayName: 'Build Frontend'
   - script: |
       echo "Deploying Frontend to server using rsync"
-      BUILD_ID=$(date +%Y%m%d%H%M%S)
-      ssh web@65.21.20.215 "mkdir -p /home/web/backoffice.admintool/releases/frontend_$BUILD_ID"
-      rsync -avz frontend/frontend_admintool/dist/ web@65.21.20.215:/home/web/backoffice.admintool/releases/frontend_$BUILD_ID
+      ssh web@65.21.20.215 "mkdir -p /home/web/backoffice.admintool/releases/frontend_$(BUILD_ID)"
+      rsync -avz frontend/frontend_admintool/dist/ web@65.21.20.215:/home/web/backoffice.admintool/releases/frontend_$(BUILD_ID)
     displayName: 'Deploy Frontend'
   - script: |
+      echo "Ensuring only 25 releases are kept"
+      ssh web@65.21.20.215 "ls -dt /home/web/backoffice.admintool/releases/frontend_* | tail -n +26 | xargs rm -rf"
+    displayName: 'Cleanup Old Frontend Releases'
+  - script: |
       echo "Switching symlink to the new release"
-      BUILD_ID=$(date +%Y%m%d%H%M%S)
-      ssh web@65.21.20.215 "ln -sfn /home/web/backoffice.admintool/releases/frontend_$BUILD_ID /home/web/backoffice.admintool/releases/frontend_production"
+      ssh web@65.21.20.215 "ln -sfn /home/web/backoffice.admintool/releases/frontend_$(BUILD_ID) /home/web/backoffice.admintool/releases/frontend_production"
     displayName: 'Switch Frontend Symlink'
   - task: PublishBuildArtifacts@1
     inputs:
@@ -98,14 +102,16 @@ jobs:
     displayName: 'Build Backend'
   - script: |
       echo "Deploying Backend to server using rsync"
-      BUILD_ID=$(date +%Y%m%d%H%M%S)
-      ssh web@65.21.20.215 "mkdir -p /home/web/backoffice.admintool/releases/backend_$BUILD_ID"
-      rsync -avz backend/backend_admintool/dist/ web@65.21.20.215:/home/web/backoffice.admintool/releases/backend_$BUILD_ID
+      ssh web@65.21.20.215 "mkdir -p /home/web/backoffice.admintool/releases/backend_$(BUILD_ID)"
+      rsync -avz backend/backend_admintool/dist/ web@65.21.20.215:/home/web/backoffice.admintool/releases/backend_$(BUILD_ID)
     displayName: 'Deploy Backend'
   - script: |
+      echo "Ensuring only 25 releases are kept"
+      ssh web@65.21.20.215 "ls -dt /home/web/backoffice.admintool/releases/backend_* | tail -n +26 | xargs rm -rf"
+    displayName: 'Cleanup Old Backend Releases'
+  - script: |
       echo "Switching symlink to the new release"
-      BUILD_ID=$(date +%Y%m%d%H%M%S)
-      ssh web@65.21.20.215 "ln -sfn /home/web/backoffice.admintool/releases/backend_$BUILD_ID /home/web/backoffice.admintool/releases/backend_production"
+      ssh web@65.21.20.215 "ln -sfn /home/web/backoffice.admintool/releases/backend_$(BUILD_ID) /home/web/backoffice.admintool/releases/backend_production"
     displayName: 'Switch Backend Symlink'
   - task: PublishBuildArtifacts@1
     inputs:
