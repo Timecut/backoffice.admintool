@@ -18,7 +18,7 @@ jobs:
   steps:
   - task: UseNode@1
     inputs:
-      version: '16.x'
+      version: '20.9.0'
   - script: |
       echo "Generating BUILD_ID"
       BUILD_ID=$(date +%Y%m%d%H%M%S)
@@ -64,7 +64,7 @@ jobs:
   steps:
   - task: UseNode@1
     inputs:
-      version: '16.x'
+      version: '20.9.0'
   - script: |
       echo "Generating BUILD_ID"
       BUILD_ID=$(date +%Y%m%d%H%M%S)
