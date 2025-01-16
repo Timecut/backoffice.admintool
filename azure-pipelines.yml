@@ -19,6 +19,20 @@ jobs:
   - task: UseNode@1
     inputs:
       version: '20.9.0'
+      
+  - task: DownloadSecureFile@1
+    name: sshKey
+    inputs:
+      secureFile: 'azure_pipelines_backoffice_admintool' # Nazwa pliku w Secure Files
+    displayName: 'Download SSH Private Key'
+
+  - script: |
+      mkdir -p ~/.ssh
+      cp $(sshKey.secureFilePath) ~/.ssh/id_rsa
+      chmod 600 ~/.ssh/id_rsa
+      echo "StrictHostKeyChecking no" >> ~/.ssh/config
+    displayName: 'Configure SSH Key'
+
   - script: |
       echo "Generating BUILD_ID"
       BUILD_ID=$(date +%Y%m%d%H%M%S)
@@ -65,6 +79,20 @@ jobs:
   - task: UseNode@1
     inputs:
       version: '20.9.0'
+
+  - task: DownloadSecureFile@1
+    name: sshKey
+    inputs:
+      secureFile: 'azure_pipelines_backoffice_admintool' # Nazwa pliku w Secure Files
+    displayName: 'Download SSH Private Key'
+
+  - script: |
+      mkdir -p ~/.ssh
+      cp $(sshKey.secureFilePath) ~/.ssh/id_rsa
+      chmod 600 ~/.ssh/id_rsa
+      echo "StrictHostKeyChecking no" >> ~/.ssh/config
+    displayName: 'Configure SSH Key'
+
   - script: |
       echo "Generating BUILD_ID"
       BUILD_ID=$(date +%Y%m%d%H%M%S)
