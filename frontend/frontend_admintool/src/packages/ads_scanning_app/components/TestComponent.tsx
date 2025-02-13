@@ -1,12 +1,13 @@
-import { useState } from 'react';
 import axios from 'axios';
+import { useState } from "preact/hooks";
+import { Fragment, FunctionComponent } from "preact";
 
 interface ResponseType {
     success: boolean;
     message: string;
 }
 
-const TestComponent: React.FC = () => {
+const TestComponent: FunctionComponent = () => {
     const [response, setResponse] = useState<string>('');
 
     const handleClick = async () => {
