@@ -28,7 +28,7 @@ services:
       - "traefik.http.middlewares.backend_admintool_cors2.headers.accesscontrolalloworiginlist=https://frontend-admintool.backoffice.mhub.se"
       - "traefik.http.middlewares.backend_admintool_cors2.headers.accesscontrolallowcredentials=true"
       - "traefik.http.middlewares.backend_admintool_cors2.headers.accesscontrolallowheaders=*"
-      
+
       - "traefik.http.routers.backend_admintool.middlewares=backend_admintool_whitelist2,backend_admintool_cors2"
     expose:
       - "3000"

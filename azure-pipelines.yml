@@ -52,6 +52,12 @@ jobs:
       cd frontend/frontend_admintool
       yarn build
     displayName: 'Build Frontend'
+  - task: PublishBuildArtifacts@1
+    inputs:
+      pathToPublish: 'frontend/frontend_admintool/build'
+      artifactName: 'frontend-build'
+      publishLocation: 'Container'
+    displayName: "Publish frontend build artifacts"
 # 
 
   - script: |
