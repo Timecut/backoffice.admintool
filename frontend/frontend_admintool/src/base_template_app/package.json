@@ -1,5 +1,5 @@
 {
-  "name": "ads_scanning_app",
+  "name": "abc",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -10,10 +10,7 @@
   "dependencies": {
     "@preact/preset-vite": "^2.10.1",
     "axios": "^1.7.9",
-    "date-fns": "^4.1.0",
     "goober": "^2.1.16",
-    "konva": "^9.3.18",
-    "preact": "^10.26.2",
-    "react-calendar": "^5.1.0"
+    "preact": "^10.25.4"
   }
 }

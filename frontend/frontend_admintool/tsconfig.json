@@ -1,7 +1,51 @@
 {
-  "files": [],
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "lib": [
+      "ESNext",
+      "DOM"
+    ],
+    "strict": true,
+    "sourceMap": true,
+    "esModuleInterop": true,
+    "noEmit": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "react-jsx",
+    "jsxImportSource": "preact",
+    "types": [
+      "node",
+      "vite/client"
+    ],
+    "baseUrl": ".",
+    "paths": {
+      "react": [
+        "./node_modules/preact/compat/"
+      ],
+      "react-dom": [
+        "./node_modules/preact/compat/"
+      ],
+      "react/jsx-runtime": [
+        "./node_modules/preact/jsx-runtime"
+      ]
+    }
+  },
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules/@types/react",
+    "node_modules/react-lifecycles-compat",
+  ],
   "references": [
-    { "path": "./tsconfig.app.json" },
-    { "path": "./tsconfig.node.json" }
-  ]
+    {
+      "path": "./tsconfig.node.json"
+    }
+  ],
 }

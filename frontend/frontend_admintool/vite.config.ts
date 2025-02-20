@@ -3,6 +3,7 @@ import { defineConfig, loadEnv } from 'vite'
 import preact from '@preact/preset-vite';
 import { splitVendorChunkPlugin } from 'vite'
 import { existsSync } from 'fs'
+import { resolve } from 'path';
 
 const loaded_env = loadEnv("development", process.cwd(), "");
 
@@ -29,12 +30,13 @@ console.log("vite.config.ts => ", JSON.stringify({ buildTarget, indexPath, fileE
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
-    preact(),
+    preact({
+    }),
     splitVendorChunkPlugin(),
   ],
   css: {},
   base: isBuildLocal ? undefined : `https://tapit.mhub.se/cdn/${buildTarget}/`,
-  root: '.',
+  root: resolve(__dirname),
   build: {
     rollupOptions: {
       input: indexPath,
@@ -48,9 +50,13 @@ export default defineConfig({
     sourcemap: false,
     minify: true
   },
+
   server: {
+    
     watch: {
-      usePolling: true
+      usePolling: true,
+
+      ignored: ['**/node_modules/**', '**/.git/**'],
     },
     hmr: true,
     host: "localhost",

@@ -33,8 +33,8 @@ export class ServiceReactManager {
         // const montserratUrl = 'https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap';
         // this.loadFontIfMissing('Montserrat', montserratUrl);
 
-        const openSansUrl = 'https://fonts.googleapis.com/css2?family=Open+Sans:wght@100;300;400;700&display=swap';
-        this.loadFontIfMissing('Open Sans', openSansUrl);
+        // const openSansUrl = 'https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap';
+        // this.loadFontIfMissing('Open Sans', openSansUrl);
         return true;
     }
 

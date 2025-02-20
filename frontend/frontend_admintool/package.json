@@ -4,10 +4,20 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "start:ads_scanning_app": "yarn workspace ads_scanning_app dev",
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+
+    "build::vite": "npx vite",
+    "build::common_local": "npm run test && BUILD_LOCAL=1 npx vite build && node ./scripts/infra/total-bundle-size.mjs",
+    "build::common_docker": "npm run test && npx vite build && node ./scripts/infra/total-bundle-size.mjs && node ./scripts/infra/docker-rsync-to-prod.mjs",
+    "relese::common": "node ./scripts/infra/release-it.mjs",
+
+    "start:ads_scanning_app": "BUILD_TARGET=ads_scanning_app npm run build::vite",
+    "relese:ads_scanning_app": "BUILD_TARGET=ads_scanning_app npm run relese::common",
+    "build_local:ads_scanning_app": "BUILD_TARGET=ads_scanning_app npm run build::common_local",
+    "build_docker:ads_scanning_app": "BUILD_TARGET=ads_scanning_app npm run build::common_docker",
+    "preview:ads_scanning_app": "BUILD_TARGET=ads_scanning_app npm run preview::common"
   },
   "dependencies": {},
   "devDependencies": {
@@ -22,7 +32,9 @@
     "typescript-eslint": "^8.18.2",
     "vite": "^6.0.5"
   },
-  "workspaces": [
-    "src/packages/*"
-  ]
+  "workspaces": {
+    "packages": [
+      "src/packages/*"
+    ]
+  }
 }

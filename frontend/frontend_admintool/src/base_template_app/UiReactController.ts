@@ -2,41 +2,10 @@
 import { ServiceListeners } from "./ServiceListeners";
 import { ServiceApi } from "./ServiceApi";
 import { ServicePageMain } from "./ServicePageMain";
-import { InitAppProps } from "./AdsScanningApp";
+import { InitAppProps } from "./BaseTemplateApp";
 
-export interface CalendarEventCropped {
-    x: number,
-    y: number,
-    w: number,
-    h: number;
-}
 
-export interface CalendarEvent {
-    id: string;
-    thumbUrl?: string;
-    scannedStatus: 'pending' | 'done';
-    date: string;
-    cropped?: CalendarEventCropped | undefined;
-}
-
-export enum CropCategory {
-    "ad" = "ad",
-    "headline" = "headline"
-}
-
-export interface CalendarData {
-    events: CalendarEvent[];
-    selectedDate: Date;
-    selectedEvent?: CalendarEvent;
-    calendarLoadStatus: "success" | "error" | "pending" | "idle";
-    saveStatus: string;
-    cropCategory?: CropCategory
-    didNotFindAds?: boolean;
-}
-
-export type UiReactControllerData = {
-    pageMain: CalendarData;
-}
+export type UiReactControllerData = { }
 export type Listener<X> = (data: X) => void;
 export type ContextListener = Listener<UiReactControllerData>;
 
@@ -49,15 +18,7 @@ export class UiReactController {
 
     constructor(initProps: InitAppProps) {
         this.dataRef = {
-            pageMain: {
-                calendarLoadStatus: "idle",
-                events: [],
-                selectedDate: new Date(),
-                selectedEvent: undefined,
-                cropCategory: CropCategory.ad,
-                didNotFindAds: undefined,
-                saveStatus: "",
-            }
+            
         }
         this.initProps = initProps;
         this.serviceListeners = new ServiceListeners(this, this.dataRef);
@@ -85,5 +46,5 @@ export class UiReactController {
     getData = () => this.dataRef ?? {};
     subscribe = (listener: any) => this.serviceListeners.subscribe(listener);
     unsubscribe = (listener: any) => this.serviceListeners.unsubscribe(listener);
-    refreshContext = () => this.serviceListeners.refreshContext();
+    refreshSubscribersUi = () => this.serviceListeners.refreshSubscribersUi();
 }

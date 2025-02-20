@@ -1,0 +1,40 @@
+.react-calendar__tile {
+    overflow: visible !important;
+}
+
+.react-calendar {
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 100;
+}
+
+.badge-wrapper {
+    position: relative;
+    top: -30px;
+    left: 25px;
+}
+
+.badge-item {
+    position: absolute;
+    top: 0;
+    left: 0;
+    color: #000;
+    width: 20px;
+    height: 20px;
+    border-radius: 20px;
+    background: #fff;
+    z-index: 2;
+    border: 1px solid #ddd;
+}
+
+
+.badge-item.text-green {
+    color: green;
+}
+
+.badge-item.text-red {
+    color: red;
+}
+
+.react-calendar__month-view__days__day--weekend{
+    color: black;
+}

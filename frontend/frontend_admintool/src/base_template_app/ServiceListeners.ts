@@ -22,7 +22,7 @@ export class ServiceListeners {
         this.listeners = this.listeners.filter(l => l !== listener);
     }
 
-    public refreshContext(): void {
+    public refreshSubscribersUi(): void {
         this.listeners.forEach(listener => listener(this.dataRef));
     }
 }

@@ -8,7 +8,7 @@ export type InitAppProps = {
     userJwtToken: string | null;
 };
 
-export class AdsScanningApp {
+export class BaseTemplateApp {
     public loggerEnabled: boolean = true;
     public factories: any;
     public appController: any | undefined;
@@ -33,7 +33,7 @@ export class AdsScanningApp {
         _rootElement?: HTMLElement
     ): Promise<void> {
 
-        const _defaultRootCssSelector = ".ads_scanning_app";
+        const _defaultRootCssSelector = ".BaseTemplateApp";
         this.rootCssSelector = _rootCssSelector ?? _defaultRootCssSelector;
         if (_rootElement === undefined || _rootElement === null) {
             const foundHtmlElement = document.querySelector(
@@ -79,14 +79,6 @@ export class AdsScanningApp {
                 const code = await import("./components/IndexUiReactModule");
                 return code.default;
             }
-            // if (import.meta.hot) {
-            //     import.meta.hot.accept('./components/IndexUiReactModule.tsx', (newModule) => {
-            //         if (newModule) {
-            //             // Możesz ręcznie zaktualizować aplikację, jeśli renderujesz tylko raz
-            //             console.log('HMR: components/IndexUiReactModule zaktualizowany');
-            //         }
-            //     });
-            // }
             const uiReactComponent = await getUiReactComponent();
 
             const reactManager = new ServiceReactManager(this.rootElement as any, _uiReactController.getData, _uiReactController, uiReactComponent);
@@ -100,8 +92,8 @@ export class AdsScanningApp {
             statusInfoEl.innerHTML = "loaded....";
             statusInfoEl.remove();
 
-            this.loggerEnabled === true && console.log("AdsScanningApp_initialized");
-            const event = new CustomEvent("AdsScanningApp_initialized");
+            this.loggerEnabled === true && console.log("BaseTemplateApp_initialized");
+            const event = new CustomEvent("BaseTemplateApp_initialized");
             document.body.dispatchEvent(event);
 
             this.loggerEnabled === true && console.log("initialize - done");
